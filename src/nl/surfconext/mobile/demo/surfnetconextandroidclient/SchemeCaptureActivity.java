@@ -28,6 +28,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 /**
+ * The Scheme Capture Activity will catch the configured scheme of the redirect_url
+ * The logic of retrieving the refresh/acces token will also be done in the class.
  * 
  * @author jknoops @ iprofs.nl
  */
@@ -74,6 +76,18 @@ public class SchemeCaptureActivity extends Activity {
 		// refreshData();
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.activity_start, menu);
+		return true;
+	}
+	
+	/**
+	 * Retrieve the parameters from the response data.
+	 * This method should only be used when the response type = token.
+	 * 
+	 * @param data - the data to split into key/values
+	 */
 	private void retrieveQueryParametersWithResponseTypeToken(Uri data) {
 		String fragment = data.getFragment();
 		Log.v("demo.surfconext", fragment);
@@ -109,6 +123,12 @@ public class SchemeCaptureActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Retrieve the parameters from the response data.
+	 * This method should only be used when the response type = code.
+	 * 
+	 * @param data - the data to split into key/values
+	 */
 	private void retrieveQueryParamatersWithResponseTypeCode(Uri data) {
 		String queryParameters = data.getQuery();
 
@@ -145,12 +165,11 @@ public class SchemeCaptureActivity extends Activity {
 		}
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_start, menu);
-		return true;
-	}
-
+	/**
+	 * Retrieve the refresh and access token.
+	 * This method should only be used when the response type = code.
+	 * The authorization code should be available in the local fragments.
+	 */
 	private void retrieveRefreshAndAccessTokenWithResponseTypeCode() {
 
 		if (fragments.containsKey("code")) {
@@ -216,19 +235,21 @@ public class SchemeCaptureActivity extends Activity {
 				dbService.setTokenType(json_token_type);
 
 			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e("demo.surfconext.error", "retrieveRefreshAndAccessTokenWithResponseTypeCode", e);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e("demo.surfconext.error", "retrieveRefreshAndAccessTokenWithResponseTypeCode", e);
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e("demo.surfconext.error", "retrieveRefreshAndAccessTokenWithResponseTypeCode", e);
 			}
 			fragments.remove("code");
 		}
 	}
 
+	/**
+	 * Renew the access token with the refresh token.
+	 * This method should only be used when the response type = code.
+	 * The refresh token should be local available.
+	 */
 	private void retrieveAccessTokenWithResponseTypeCode() {
 
 		Log.v("demo.surfconext", "retrieveAccessTokenWithResponseTypeCode");
@@ -283,19 +304,21 @@ public class SchemeCaptureActivity extends Activity {
 			service.setTokenType(json_token_type);
 
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e("demo.surfconext.error", "retrieveAccessTokenWithResponseTypeCode", e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e("demo.surfconext.error", "retrieveAccessTokenWithResponseTypeCode", e);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e("demo.surfconext.error", "retrieveAccessTokenWithResponseTypeCode", e);
 		}
 		// FOR TESTING PURPOSE ONLY
 		// AuthenticationDbService.getInstance().setRefreshToken("");
 	}
 
+	/**
+	 * Retrieve the data from the secure webservice with the access token.
+	 * This method should only be used when the response type = code.
+	 * The access token should be local available.
+	 */
 	private void retrieveDataWithAccessTokenWithResponseTypeCode() {
 		HttpURLConnection conn = null;
 		try {
@@ -321,11 +344,6 @@ public class SchemeCaptureActivity extends Activity {
 			InputStreamReader isr = new InputStreamReader(conn.getInputStream());
 			BufferedReader in = new BufferedReader(isr, 256);
 
-			if (true) {
-				Log.v("DEBUG", conn.toString());
-				Log.v("DEBUG", "ResponseCode =" + conn.getResponseCode());
-			}
-
 			String response = "";
 			StringBuilder sb_output = new StringBuilder();
 			sb_output.append(et.getText());
@@ -340,9 +358,9 @@ public class SchemeCaptureActivity extends Activity {
 			count++;
 
 		} catch (MalformedURLException e) {
-
+			Log.e("demo.surfconext.error", "retrieveDataWithAccessTokenWithResponseTypeCode", e);
 		} catch (IOException e) {
-
+			
 			try {
 				Log.d("demo.surfconext.error", "" + conn.getResponseCode()
 						+ " " + conn.getResponseMessage());
@@ -376,7 +394,7 @@ public class SchemeCaptureActivity extends Activity {
 				}
 
 			} catch (IOException e1) {
-
+				Log.e("demo.surfconext.error", "retrieveDataWithAccessTokenWithResponseTypeCode", e);
 			}
 		}
 
@@ -384,6 +402,11 @@ public class SchemeCaptureActivity extends Activity {
 		// AuthenticationDbService.getInstance().setAccessToken("");
 	}
 
+	/**
+	 * Retrieve the data from the secure webservice with the access token.
+	 * This method should only be used when the response type = token.
+	 * The access token should be local available.
+	 */
 	private void retrieveDataWithAccessTokenWithResponseTypeToken() {
 		String access_token = fragments.get("access_token");
 		Log.v("demo.surfconext", "access_token=" + access_token);
@@ -431,19 +454,24 @@ public class SchemeCaptureActivity extends Activity {
 			et.setText(sb.toString());
 			tc.disconnect();
 		} catch (Exception e) {
-			e.printStackTrace();
-			// throw new PopulateException();
+			Log.e("demo.surfconext.error", "retrieveDataWithAccessTokenWithResponseTypeToken", e);
 		} finally {
 			try {
 				in.close();
 
 			} catch (IOException e) {
-
-				e.printStackTrace();
+				Log.e("demo.surfconext.error", "retrieveDataWithAccessTokenWithResponseTypeToken", e);
 			}
 		}
 	}
 
+	/**
+	 * The default flow for retrieving data.
+	 * if needed, retrieve refresh and access token from the authorization code.
+	 * if needed, retrieve new access token from the refresh token
+	 * if needed, retrieve new authorization code.
+	 * retrieve the data.
+	 */
 	private void refreshData() {
 		disableConnectionReuseIfNecessary();
 
@@ -496,10 +524,15 @@ public class SchemeCaptureActivity extends Activity {
 
 		} else {
 
+			// TODO check if response type = token works in all cases.
 			retrieveDataWithAccessTokenWithResponseTypeToken();
 		}
 	}
 
+	/**
+	 * For use with android 2.2 (FROYO) the property http.keepAlive needs to be set on false.
+	 * After this the connection pooling won't be used. The 
+	 */
 	private static void disableConnectionReuseIfNecessary() {
 		// HTTP connection reuse which was buggy pre-froyo
 		System.setProperty("http.keepAlive", "false");

@@ -16,7 +16,6 @@ import android.widget.EditText;
  * The scheme of the redirect_url will be catch by The other Activity
  * (SchemeCaptureActivity).
  * 
- * 
  * @author jknoops @ iprofs.nl
  */
 public class StartActivity extends Activity {
