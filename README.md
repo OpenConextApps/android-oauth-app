@@ -12,9 +12,7 @@ The current specification for OAuth 2.0 can be found at http://tools.ietf.org/ht
 ## Building
 Building the android app requires a [git](http://git-scm.com/) client, the android sdk, Eclipse
 
-'''bash
-git clone git://github.com/OpenConextApps/android-oauth-app.git
-'''
+    git clone git://github.com/OpenConextApps/android-oauth-app.git
 
 Import the project in Eclipse.
 (See Android ADT documentation for running Android apps from Eclipse)
@@ -25,18 +23,16 @@ Import the project in Eclipse.
 
 In the properties file demo.properties is confugured the following properties.
 
-'''ini
 # Summerschool demo
-authorize_url=https://frko.surfnetlabs.nl/php-oauth/authorize.php
-authorize_response_type=code
-authorize_grant_type=authorization_code
-authorize_client_id= oauth-mobile-app
-authorize_scope=grades
-authorize_redirect_uri=oauth-mobile-app://callback
-token_url=https://frko.surfnetlabs.nl/php-oauth/token.php
-token_grant_type=authorization_code
-webservice_url=https://frko.surfnetlabs.nl/php-summerschool/api.php/grades/@me
-'''
+    authorize_url=https://frko.surfnetlabs.nl/php-oauth/authorize.php
+    authorize_response_type=code
+    authorize_grant_type=authorization_code
+    authorize_client_id= oauth-mobile-app
+    authorize_scope=grades
+    authorize_redirect_uri=oauth-mobile-app://callback
+    token_url=https://frko.surfnetlabs.nl/php-oauth/token.php
+    token_grant_type=authorization_code
+    webservice_url=https://frko.surfnetlabs.nl/php-summerschool/api.php/grades/@me
 
 ### Start Activity
 
