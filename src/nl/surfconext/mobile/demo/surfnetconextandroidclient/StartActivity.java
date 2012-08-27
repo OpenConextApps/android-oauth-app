@@ -25,15 +25,15 @@ public class StartActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.v("demo.surfconext", "Starting Demo Application");
+		Log.v("demo.SActivity", "Starting Demo Application");
 
 		setContentView(R.layout.activity_start);
 
-		Log.d("demo.surfconext", "Loading properties");
+		Log.d("demo.SActivity", "Loading properties");
 
 		service = AuthenticationDbService.getInstance(this);
 
-		Log.d("demo.surfconext", "Initializing the screen.");
+		Log.d("demo.SActivity", "Initializing the screen.");
 
 		EditText editTextUrl = (EditText) findViewById(R.id.editText_autorize_url);
 		editTextUrl.setText(service.getAuthorize_url());
@@ -74,7 +74,7 @@ public class StartActivity extends Activity {
 
 				String url = sb.toString();
 
-				Log.d("demo.surfconext",
+				Log.d("demo.SActivity",
 						"Starting (Starting class) with url = " + url);
 				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 

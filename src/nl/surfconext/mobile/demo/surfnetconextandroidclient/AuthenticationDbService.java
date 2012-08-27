@@ -28,7 +28,9 @@ public class AuthenticationDbService {
 	private static final String ACCESS_TOKEN = "access_token";
 	private static final String REFRESH_TOKEN = "refresh_token";
 	private static final String TOKEN_TYPE = "token_type";
-
+	private static final String EXPIRES_IN = "expires_in";
+	private static final String SCOPE = "scope";
+	
 	public static final String RESPONSE_TYPE_TOKEN = "token";
 	public static final String RESPONSE_TYPE_CODE = "code";
 	
@@ -76,13 +78,13 @@ public class AuthenticationDbService {
 			InputStream rawResource = resources.openRawResource(R.raw.demo);
 			demoProperties = new Properties();
 			demoProperties.load(rawResource);
-			Log.d("demo.surfconext", "The properties are now loaded");
-			Log.v("demo.surfconext", "properties: " + demoProperties);
+			Log.d("demo.DbService", "The properties are now loaded");
+			Log.v("demo.DbService", "properties: " + demoProperties);
 
 		} catch (NotFoundException e) {
-			Log.e("demo.surfconext.error", "Did not find raw resource: " + e);
+			Log.e("demo.DbService.error", "Did not find raw resource: " + e);
 		} catch (IOException e) {
-			Log.e("demo.surfconext.error", "Failed to open demo property file");
+			Log.e("demo.DbService.error", "Failed to open demo property file");
 		}
 
 	}
@@ -120,6 +122,28 @@ public class AuthenticationDbService {
 		editor.commit();
 	}
 
+	public Integer getExpiresIn() {
+		return mPrefs.getInt(EXPIRES_IN, -1);
+	}
+	
+	public void setExpiresIn(final int expiresIn) {
+
+		Editor editor = mPrefs.edit();
+		editor.putInt(EXPIRES_IN, expiresIn);
+		editor.commit();
+	}
+	
+	public String getScope() {
+		return mPrefs.getString(SCOPE, null);
+	}
+	
+	public void setScope(final String scope) {
+
+		Editor editor = mPrefs.edit();
+		editor.putString(SCOPE, scope);
+		editor.commit();
+	}
+	
 	public String getAuthorize_url() {
 		return demoProperties.getProperty("authorize_url");
 	}

@@ -20,6 +20,9 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.AsyncTask.Status;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -41,14 +44,13 @@ public class SchemeCaptureActivity extends Activity {
 
 	private AuthenticationDbService service;
 	private int count;
+	private RetrieveDataResponseTypeCode retrieveDataResponseTypeCode;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_schemecapture);
-
-		Log.d("demo.surfconext", "Loading properties");
 
 		service = AuthenticationDbService.getInstance(this);
 		isResponseTypeIsCode = AuthenticationDbService.RESPONSE_TYPE_CODE
@@ -64,7 +66,7 @@ public class SchemeCaptureActivity extends Activity {
 		});
 
 		Uri data = getIntent().getData();
-		Log.v("demo.surfconext", "Uri = " + data.toString());
+		Log.v("demo.SCActivity", "Uri = " + data.toString());
 
 		if (isResponseTypeIsCode) {
 			retrieveQueryParamatersWithResponseTypeCode(data);
@@ -90,10 +92,10 @@ public class SchemeCaptureActivity extends Activity {
 	 */
 	private void retrieveQueryParametersWithResponseTypeToken(Uri data) {
 		String fragment = data.getFragment();
-		Log.v("demo.surfconext", fragment);
+		Log.v("demo.SCActivity", "Fragement (Token) = " + fragment);
 
 		String[] pairs = fragment.split("&");
-		Log.v("demo.surfconext", pairs.toString());
+		Log.v("demo.SCActivity", "Pairs (Token) = "+pairs.toString());
 
 		int i = 0;
 		String key = "";
@@ -116,7 +118,7 @@ public class SchemeCaptureActivity extends Activity {
 					sb.append(value + "\n");
 				}
 
-				Log.v("demo.surfconext", "[" + i + "," + j + "] = " + p);
+				Log.v("demo.SCActivity", "[" + i + "," + j + "] = " + p);
 				j++;
 			}
 			i++;
@@ -132,10 +134,10 @@ public class SchemeCaptureActivity extends Activity {
 	private void retrieveQueryParamatersWithResponseTypeCode(Uri data) {
 		String queryParameters = data.getQuery();
 
-		Log.v("demo.surfconext", queryParameters);
+		Log.v("demo.SCActivity", "Queryparameters (Code) = " + queryParameters);
 
 		String[] pairs = queryParameters.split("&");
-		Log.v("demo.surfconext", pairs.toString());
+		Log.v("demo.SCActivity", "Pairs (Code) = " + pairs.toString());
 
 		int i = 0;
 		String key = "";
@@ -158,7 +160,7 @@ public class SchemeCaptureActivity extends Activity {
 					sb.append(value + "\n");
 				}
 
-				Log.v("demo.surfconext", "[" + i + "," + j + "] = " + p);
+				Log.v("demo.SCActivity", "[" + i + "," + j + "] = " + p);
 				j++;
 			}
 			i++;
@@ -220,27 +222,30 @@ public class SchemeCaptureActivity extends Activity {
 				}
 				Log.v("demo.surfconext", response);
 
-				JSONObject jo = new JSONObject(response);
-
-				String json_access_token = jo.getString("access_token");
-				int json_expires_in = jo.getInt("expires_in");
-				String json_scope = jo.getString("scope");
-				String json_refresh_token = jo.getString("refresh_token");
-				String json_token_type = jo.getString("token_type");
-
-				AuthenticationDbService dbService = AuthenticationDbService
-						.getInstance(this);
-				dbService.setAccessToken(json_access_token);
-				dbService.setRefreshToken(json_refresh_token);
-				dbService.setTokenType(json_token_type);
+				storeTokens(response) ;
+				
+//				JSONObject jo = new JSONObject(response);
+//
+//				String json_access_token = jo.getString("access_token");
+//				int json_expires_in = jo.getInt("expires_in");
+//				String json_scope = jo.getString("scope");
+//				String json_refresh_token = jo.getString("refresh_token");
+//				String json_token_type = jo.getString("token_type");
+//
+//				AuthenticationDbService dbService = AuthenticationDbService
+//						.getInstance(this);
+//				dbService.setAccessToken(json_access_token);
+//				dbService.setRefreshToken(json_refresh_token);
+//				dbService.setTokenType(json_token_type);
 
 			} catch (MalformedURLException e) {
 				Log.e("demo.surfconext.error", "retrieveRefreshAndAccessTokenWithResponseTypeCode", e);
 			} catch (IOException e) {
 				Log.e("demo.surfconext.error", "retrieveRefreshAndAccessTokenWithResponseTypeCode", e);
-			} catch (JSONException e) {
-				Log.e("demo.surfconext.error", "retrieveRefreshAndAccessTokenWithResponseTypeCode", e);
 			}
+//			} catch (JSONException e) {
+//				Log.e("demo.surfconext.error", "retrieveRefreshAndAccessTokenWithResponseTypeCode", e);
+//			}
 			fragments.remove("code");
 		}
 	}
@@ -291,25 +296,27 @@ public class SchemeCaptureActivity extends Activity {
 			}
 			Log.v("demo.surfconext", response);
 
-			JSONObject jo = new JSONObject(response);
-
-			String json_access_token = jo.getString("access_token");
-			int json_expires_in = jo.getInt("expires_in");
-			String json_scope = jo.getString("scope");
-			// String json_refresh_token = jo.getString("refresh_token");
-			String json_token_type = jo.getString("token_type");
-
-			service.setAccessToken(json_access_token);
-			// dbService.setRefreshToken(json_refresh_token);
-			service.setTokenType(json_token_type);
+			storeTokens(response);
+//			JSONObject jo = new JSONObject(response);
+//
+//			String json_access_token = jo.getString("access_token");
+//			int json_expires_in = jo.getInt("expires_in");
+//			String json_scope = jo.getString("scope");
+//			// String json_refresh_token = jo.getString("refresh_token");
+//			String json_token_type = jo.getString("token_type");
+//
+//			service.setAccessToken(json_access_token);
+//			// dbService.setRefreshToken(json_refresh_token);
+//			service.setTokenType(json_token_type);
 
 		} catch (MalformedURLException e) {
 			Log.e("demo.surfconext.error", "retrieveAccessTokenWithResponseTypeCode", e);
 		} catch (IOException e) {
 			Log.e("demo.surfconext.error", "retrieveAccessTokenWithResponseTypeCode", e);
-		} catch (JSONException e) {
-			Log.e("demo.surfconext.error", "retrieveAccessTokenWithResponseTypeCode", e);
-		}
+		} 
+//		catch (JSONException e) {
+//			Log.e("demo.surfconext.error", "retrieveAccessTokenWithResponseTypeCode", e);
+//		}
 		// FOR TESTING PURPOSE ONLY
 		// AuthenticationDbService.getInstance().setRefreshToken("");
 	}
@@ -320,86 +327,27 @@ public class SchemeCaptureActivity extends Activity {
 	 * The access token should be local available.
 	 */
 	private void retrieveDataWithAccessTokenWithResponseTypeCode() {
-		HttpURLConnection conn = null;
-		try {
-
-			URL webserviceUrl = new URL(service.getWebservice_url());
-
-			conn = (HttpURLConnection) webserviceUrl.openConnection();
-
-			if (count % 3 == 2) {
-				if (service.getTokenType().equalsIgnoreCase("bearer")) {
-					conn.setRequestProperty("Authorization", "Bearer 222"
-							+ service.getAccessToken());
-				}
-			} else {
-				if (service.getTokenType().equalsIgnoreCase("bearer")) {
-					conn.setRequestProperty("Authorization", "Bearer "
-							+ service.getAccessToken());
-				}
-			}
-			Log.d("demo.surfconext", conn.getRequestProperties().toString());
-
-			Log.v("demo.surfconext", conn.toString());
-			InputStreamReader isr = new InputStreamReader(conn.getInputStream());
-			BufferedReader in = new BufferedReader(isr, 256);
-
-			String response = "";
-			StringBuilder sb_output = new StringBuilder();
-			sb_output.append(et.getText());
-			while ((response = in.readLine()) != null) {
-
-				Log.v("demo.surfconext", "response=" + response);
-				sb_output.append(response);
-
-			}
-			sb_output.append("\n");
-			et.setText(sb_output.toString());
-			count++;
-
-		} catch (MalformedURLException e) {
-			Log.e("demo.surfconext.error", "retrieveDataWithAccessTokenWithResponseTypeCode", e);
-		} catch (IOException e) {
+		
+		if (retrieveDataResponseTypeCode == null) {
+			retrieveDataResponseTypeCode = new RetrieveDataResponseTypeCode();
+		}
+		if (retrieveDataResponseTypeCode.getStatus() == Status.FINISHED) {
+			retrieveDataResponseTypeCode = new RetrieveDataResponseTypeCode();
+		} else if (retrieveDataResponseTypeCode.getStatus() == Status.PENDING) {
+			// log
+			this.logUI("Please wait...");
 			
-			try {
-				Log.d("demo.surfconext.error", "" + conn.getResponseCode()
-						+ " " + conn.getResponseMessage());
-
-				int responseCode = conn.getResponseCode();
-				if (responseCode == 401) {
-					// token invalid
-					StringBuilder sb_output = new StringBuilder();
-					sb_output.append(et.getText());
-					sb_output.append("\n");
-					sb_output
-							.append("Oops the token is invalid, let me try again!\n");
-
-					et.setText(sb_output.toString());
-					count = 0;
-					retrieveAccessTokenWithResponseTypeCode();
-					retrieveDataWithAccessTokenWithResponseTypeCode();
-				} else {
-
-					// something else
-					StringBuilder sb_output = new StringBuilder();
-					sb_output.append(et.getText());
-					sb_output.append("\n");
-					sb_output.append("Oops something happend!\n");
-					sb_output.append("HTTP response code = " + responseCode
-							+ "\n");
-					sb_output.append("HTTP response msg  = "
-							+ conn.getResponseMessage() + "\n");
-
-					et.setText(sb_output.toString());
-				}
-
-			} catch (IOException e1) {
-				Log.e("demo.surfconext.error", "retrieveDataWithAccessTokenWithResponseTypeCode", e);
-			}
+		} else {
+			retrieveDataResponseTypeCode.execute();
 		}
 
 		// TESTING PRUPOSE ONLY
 		// AuthenticationDbService.getInstance().setAccessToken("");
+	}
+
+	private void logUI(String text) {
+		
+		et.setText(et.getText() + "\n" + text);
 	}
 
 	/**
@@ -535,7 +483,136 @@ public class SchemeCaptureActivity extends Activity {
 	 */
 	private static void disableConnectionReuseIfNecessary() {
 		// HTTP connection reuse which was buggy pre-froyo
-		System.setProperty("http.keepAlive", "false");
+		
+		if (Build.VERSION.SDK_INT == 8) {
+			System.setProperty("http.keepAlive", "false");
+		}
 	}
 
+	private void storeTokens(String tokenString) {
+
+		try {
+			JSONObject jo = new JSONObject(tokenString);
+			
+			if ((!jo.has("access_token")) && (!jo.has("token_type"))) {
+				/**
+				 * Error !, those 2 are required!.
+				 */
+				// TODO
+			}
+			
+			service.setAccessToken(jo.getString("access_token"));
+			service.setTokenType(jo.getString("token_type"));
+			
+			if (jo.has("refresh_token")) {
+				service.setRefreshToken(jo.getString("refresh_token"));
+			}
+
+			if (jo.has("expires_in")) {
+				service.setExpiresIn(jo.getInt("expires_in"));
+			}
+			
+			if (jo.has("scope")) {
+				service.setScope(jo.getString("scope"));
+			}
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private class RetrieveDataResponseTypeCode extends AsyncTask<String, Void, String> {
+
+		@Override
+		protected String doInBackground(String... params) {
+			
+			HttpURLConnection conn = null;
+			try {
+
+				URL webserviceUrl = new URL(service.getWebservice_url());
+
+				conn = (HttpURLConnection) webserviceUrl.openConnection();
+
+				if (count % 3 == 2) {
+					if (service.getTokenType().equalsIgnoreCase("bearer")) {
+						conn.setRequestProperty("Authorization", "Bearer 222"
+								+ service.getAccessToken());
+					}
+				} else {
+					if (service.getTokenType().equalsIgnoreCase("bearer")) {
+						conn.setRequestProperty("Authorization", "Bearer "
+								+ service.getAccessToken());
+					}
+				}
+				Log.d("demo.surfconext", conn.getRequestProperties().toString());
+
+				Log.v("demo.surfconext", conn.toString());
+				InputStreamReader isr = new InputStreamReader(conn.getInputStream());
+				BufferedReader in = new BufferedReader(isr, 256);
+
+				String response = "";
+				StringBuilder sb_output = new StringBuilder();
+				sb_output.append(et.getText());
+				while ((response = in.readLine()) != null) {
+
+					Log.v("demo.surfconext", "response=" + response);
+					sb_output.append(response);
+
+				}
+				sb_output.append("\n");
+				et.setText(sb_output.toString());
+				count++;
+
+			} catch (MalformedURLException e) {
+				Log.e("demo.surfconext.error", "retrieveDataWithAccessTokenWithResponseTypeCode", e);
+			} catch (IOException e) {
+				
+				try {
+					Log.d("demo.surfconext.error", "" + conn.getResponseCode()
+							+ " " + conn.getResponseMessage());
+
+					int responseCode = conn.getResponseCode();
+					if (responseCode == 401) {
+						// token invalid
+						StringBuilder sb_output = new StringBuilder();
+						sb_output.append(et.getText());
+						sb_output.append("\n");
+						sb_output
+								.append("Oops the token is invalid, let me try again!\n");
+
+						et.setText(sb_output.toString());
+						count = 0;
+						retrieveAccessTokenWithResponseTypeCode();
+						retrieveDataWithAccessTokenWithResponseTypeCode();
+					} else {
+
+						// something else
+						StringBuilder sb_output = new StringBuilder();
+						sb_output.append(et.getText());
+						sb_output.append("\n");
+						sb_output.append("Oops something happend!\n");
+						sb_output.append("HTTP response code = " + responseCode
+								+ "\n");
+						sb_output.append("HTTP response msg  = "
+								+ conn.getResponseMessage() + "\n");
+
+						et.setText(sb_output.toString());
+					}
+
+				} catch (IOException e1) {
+					Log.e("demo.surfconext.error", "retrieveDataWithAccessTokenWithResponseTypeCode", e);
+				}
+			}
+			
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			
+			Log.d("DEBUG-RetrieveDataResponseTypeCode","onPostExecute = "+result);
+		}
+	}
 }
