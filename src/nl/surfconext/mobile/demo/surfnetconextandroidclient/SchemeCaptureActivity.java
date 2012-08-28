@@ -375,9 +375,9 @@ public class SchemeCaptureActivity extends Activity {
 		}
 	}
 
-	private void storeTokens(String tokenString) {
+	private void storeTokens(String tokenString) throws JSONException {
 
-		try {
+		//try {
 			JSONObject jo = new JSONObject(tokenString);
 
 			if ((!jo.has("access_token")) && (!jo.has("token_type"))) {
@@ -402,14 +402,17 @@ public class SchemeCaptureActivity extends Activity {
 				service.setScope(jo.getString("scope"));
 			}
 
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
 	public void doAuthentication() {
 
+		service.setAccessToken("");
+		service.setRefreshToken("");
+		
 		StringBuilder sb = new StringBuilder();
 		// basic authorize
 		sb.append(service.getAuthorize_url());
@@ -620,8 +623,13 @@ public class SchemeCaptureActivity extends Activity {
 		protected void onPostExecute(String result) {
 
 			if (result != null && !"".equals(result)) {
-				storeTokens(result);
-				retrieveDataWithAccessTokenWithResponseTypeCode();
+				try {
+					storeTokens(result);
+					retrieveDataWithAccessTokenWithResponseTypeCode();
+				} catch (JSONException e) {
+
+					doAuthentication();
+				}
 			} else {
 
 				doAuthentication();
@@ -639,11 +647,11 @@ public class SchemeCaptureActivity extends Activity {
 
 			String url = service.getToken_url();
 			URL tokenUrl;
-
+			HttpsURLConnection conn = null;
 			try {
 				tokenUrl = new URL(url);
 
-				HttpsURLConnection conn = (HttpsURLConnection) tokenUrl
+				conn = (HttpsURLConnection) tokenUrl
 						.openConnection();
 
 				String param = "grant_type="
@@ -679,11 +687,38 @@ public class SchemeCaptureActivity extends Activity {
 				Log.e("demo.surfconext.error",
 						"retrieveAccessTokenWithResponseTypeCode", e);
 			} catch (IOException e) {
-				Log.e("demo.surfconext.error",
-						"retrieveAccessTokenWithResponseTypeCode", e);
+				
+				try {
+					Log.d("demo.surfconext.error", "" + conn.getResponseCode()
+							+ " " + conn.getResponseMessage());
+
+					int responseCode = conn.getResponseCode();
+					if (responseCode == 400) {
+						Log.v("demo.SCActivity.error", "Bad request, authenticate again. Refresh token is not valid anymore.");
+						return "";
+
+					} else {
+
+						Log.v("demo.SCActivity.error", "Bad request, authenticate again. Refresh token is not valid anymore.");
+						// something else
+						StringBuilder sb_output = new StringBuilder();
+						sb_output.append("Oops something happend!\n");
+						sb_output.append("HTTP response code = " + responseCode
+								+ "\n");
+						sb_output.append("HTTP response msg  = "
+								+ conn.getResponseMessage() + "\n");
+						
+						Log.v("demo.SCActivity.error", sb_output.toString());
+						return "";
+					}
+
+				} catch (IOException e1) {
+					Log.e("demo.surfconext.error",
+							"RetrieveDataResponseTypeCodeTask", e);
+				}
+
 			}
-			// FOR TESTING PURPOSE ONLY
-			// AuthenticationDbService.getInstance().setRefreshToken("");
+
 			return result;
 		}
 
@@ -692,8 +727,14 @@ public class SchemeCaptureActivity extends Activity {
 
 			if (result != null && !"".equals(result)) {
 				logUI("Retrieved new Token(s)");
-				storeTokens(result);
-				retrieveDataWithAccessTokenWithResponseTypeCode();
+				try {
+					storeTokens(result);
+					retrieveDataWithAccessTokenWithResponseTypeCode();
+				} catch (JSONException e) {
+
+					doAuthentication();
+				}
+				
 			} else {
 
 				doAuthentication();
