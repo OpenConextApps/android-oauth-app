@@ -127,6 +127,7 @@ public class SchemeCaptureActivity extends Activity {
 			}
 			i++;
 		}
+		storeTokenFromFragments();
 	}
 
 	/**
@@ -288,7 +289,7 @@ public class SchemeCaptureActivity extends Activity {
 			in = new BufferedReader(isr, 256);
 
 			StringBuilder sb = new StringBuilder();
-			// sb.append(et.getText());
+			sb.append(et.getText());
 			sb.append("\nLenght=");
 			sb.append(tc.getContentLength());
 			sb.append("\nType=");
@@ -314,7 +315,7 @@ public class SchemeCaptureActivity extends Activity {
 				Log.v("demo.surfconext", "output=" + output);
 			}
 
-			// et.setText(sb.toString());
+			et.setText(sb.toString());
 			tc.disconnect();
 		} catch (Exception e) {
 			Log.e("demo.surfconext.error",
@@ -408,6 +409,22 @@ public class SchemeCaptureActivity extends Activity {
 //		}
 	}
 
+	private void storeTokenFromFragments() {
+		
+		if (fragments.containsKey("access_token")) {
+			service.setAccessToken(fragments.get("access_token"));
+		} else {
+			service.setAccessToken("");
+		}
+		
+		if (fragments.containsKey("token_type")) {
+			service.setTokenType(fragments.get("toke_type"));
+		} else {
+			service.setTokenType("");
+		}
+		
+	}
+	
 	public void doAuthentication() {
 
 		service.setAccessToken("");
@@ -578,7 +595,14 @@ public class SchemeCaptureActivity extends Activity {
 							+ "&client_id="
 							+ URLEncoder.encode(
 									service.getAuthorize_client_id(), "UTF-8");
-
+					
+					String client_secret = service.getAuthorize_client_secret();
+					
+					if (client_secret != null) {
+						param += "&client_secret="
+								+ URLEncoder.encode(client_secret, "UTF-8");
+					}
+					
 					conn.setDoOutput(true);
 					conn.setRequestMethod("POST");
 					conn.setFixedLengthStreamingMode(param.getBytes().length);
@@ -593,6 +617,8 @@ public class SchemeCaptureActivity extends Activity {
 					// build the string to store the response text from the
 					// server
 					String response = "";
+					Log.d("DEBUG",""+conn.getResponseCode());
+					Log.d("DEBUG",""+conn.getResponseMessage());
 
 					// start listening to the stream
 					Scanner inStream = new Scanner(conn.getInputStream());

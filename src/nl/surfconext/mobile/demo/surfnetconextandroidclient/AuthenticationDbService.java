@@ -166,6 +166,10 @@ public class AuthenticationDbService {
 		editor.commit();
 	}
 
+	public String getAuthorize_client_secret() {
+		return demoProperties.getProperty("authorize_client_secret", null);
+	}
+	
 	public String getAuthorize_url() {
 		return demoProperties.getProperty("authorize_url");
 	}
