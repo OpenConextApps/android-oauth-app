@@ -2,6 +2,7 @@ package nl.surfconext.mobile.demo.surfnetconextandroidclient;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.Properties;
 
 import android.content.Context;
@@ -30,6 +31,7 @@ public class AuthenticationDbService {
 	private static final String TOKEN_TYPE = "token_type";
 	private static final String EXPIRES_IN = "expires_in";
 	private static final String SCOPE = "scope";
+	private static final String EXPIRES_IN_LONG = "expires_in_long";
 	
 	public static final String RESPONSE_TYPE_TOKEN = "token";
 	public static final String RESPONSE_TYPE_CODE = "code";
@@ -101,7 +103,19 @@ public class AuthenticationDbService {
 	}
 
 	public String getAccessToken() {
-		return mPrefs.getString(ACCESS_TOKEN, null);
+		
+		long expires_in_long = mPrefs.getLong(EXPIRES_IN_LONG, -1);
+		
+		if (!mPrefs.contains(EXPIRES_IN)) {
+			return mPrefs.getString(ACCESS_TOKEN, null);
+		}
+		if (expires_in_long == -1) {
+			return "";
+		}
+		if (expires_in_long > (new Date().getTime())) {
+			return mPrefs.getString(ACCESS_TOKEN, null);
+		}
+		return "";
 	}
 
 	public void setAccessToken(final String token) {
@@ -128,7 +142,12 @@ public class AuthenticationDbService {
 	
 	public void setExpiresIn(final int expiresIn) {
 
+		Date nowDate = new Date();
+		long nowLong = nowDate.getTime();
+		long expiresLong = nowLong + (1000l*expiresIn);
+		
 		Editor editor = mPrefs.edit();
+		editor.putLong(EXPIRES_IN_LONG, expiresLong);
 		editor.putInt(EXPIRES_IN, expiresIn);
 		editor.commit();
 	}
