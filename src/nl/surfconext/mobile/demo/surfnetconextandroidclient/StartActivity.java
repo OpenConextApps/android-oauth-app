@@ -74,8 +74,8 @@ public class StartActivity extends Activity {
 
 				String url = sb.toString();
 
-				Log.d("demo.SActivity",
-						"Starting (Starting class) with url = " + url);
+				Log.d("demo.SActivity", "Starting (Starting class) with url = "
+						+ url);
 				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 
 				startActivity(i);

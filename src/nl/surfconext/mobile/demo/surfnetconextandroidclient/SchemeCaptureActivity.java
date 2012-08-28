@@ -31,8 +31,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 /**
- * The Scheme Capture Activity will catch the configured scheme of the redirect_url
- * The logic of retrieving the refresh/acces token will also be done in the class.
+ * The Scheme Capture Activity will catch the configured scheme of the
+ * redirect_url The logic of retrieving the refresh/acces token will also be
+ * done in the class.
  * 
  * @author jknoops @ iprofs.nl
  */
@@ -42,8 +43,9 @@ public class SchemeCaptureActivity extends Activity {
 	private EditText et;
 	private boolean isResponseTypeIsCode;
 
-	private AuthenticationDbService service;
-	
+	private AuthenticationDbService service = AuthenticationDbService
+			.getInstance(this);
+
 	private RetrieveDataResponseTypeCodeTask retrieveDataResponseTypeCodeTask;
 	private RetrieveRefreshAndAccessTokenTask retrieveRefreshAndAccessTokenTask;
 	private RetrieveAccessTokenTask retrieveAccessTokenTask;
@@ -54,7 +56,6 @@ public class SchemeCaptureActivity extends Activity {
 
 		setContentView(R.layout.activity_schemecapture);
 
-		service = AuthenticationDbService.getInstance(this);
 		isResponseTypeIsCode = AuthenticationDbService.RESPONSE_TYPE_CODE
 				.equals(service.getAuthorize_response_type());
 
@@ -85,19 +86,20 @@ public class SchemeCaptureActivity extends Activity {
 		getMenuInflater().inflate(R.menu.activity_start, menu);
 		return true;
 	}
-	
+
 	/**
-	 * Retrieve the parameters from the response data.
-	 * This method should only be used when the response type = token.
+	 * Retrieve the parameters from the response data. This method should only
+	 * be used when the response type = token.
 	 * 
-	 * @param data - the data to split into key/values
+	 * @param data
+	 *            - the data to split into key/values
 	 */
 	private void retrieveQueryParametersWithResponseTypeToken(Uri data) {
 		String fragment = data.getFragment();
 		Log.v("demo.SCActivity", "Fragement (Token) = " + fragment);
 
 		String[] pairs = fragment.split("&");
-		Log.v("demo.SCActivity", "Pairs (Token) = "+pairs.toString());
+		Log.v("demo.SCActivity", "Pairs (Token) = " + pairs.toString());
 
 		int i = 0;
 		String key = "";
@@ -128,10 +130,11 @@ public class SchemeCaptureActivity extends Activity {
 	}
 
 	/**
-	 * Retrieve the parameters from the response data.
-	 * This method should only be used when the response type = code.
+	 * Retrieve the parameters from the response data. This method should only
+	 * be used when the response type = code.
 	 * 
-	 * @param data - the data to split into key/values
+	 * @param data
+	 *            - the data to split into key/values
 	 */
 	private void retrieveQueryParamatersWithResponseTypeCode(Uri data) {
 		String queryParameters = data.getQuery();
@@ -170,36 +173,36 @@ public class SchemeCaptureActivity extends Activity {
 	}
 
 	/**
-	 * Retrieve the refresh and access token.
-	 * This method should only be used when the response type = code.
-	 * The authorization code should be available in the local fragments.
+	 * Retrieve the refresh and access token. This method should only be used
+	 * when the response type = code. The authorization code should be available
+	 * in the local fragments.
 	 */
 	private void retrieveRefreshAndAccessTokenWithResponseTypeCode() {
 
 		if (retrieveRefreshAndAccessTokenTask == null) {
 			retrieveRefreshAndAccessTokenTask = new RetrieveRefreshAndAccessTokenTask();
 		}
-		Log.d("TASK", retrieveRefreshAndAccessTokenTask.toString());
-		
+		Log.d("TASK-1", retrieveRefreshAndAccessTokenTask.toString());
+
 		if (retrieveRefreshAndAccessTokenTask.getStatus() == Status.FINISHED) {
 			retrieveRefreshAndAccessTokenTask = new RetrieveRefreshAndAccessTokenTask();
-			Log.d("TASK-execute1", "RetrieveRefreshAndAccessTokenTask");
+			Log.d("TASK-1-execute1", "RetrieveRefreshAndAccessTokenTask");
 			retrieveRefreshAndAccessTokenTask.execute();
 		} else if (retrieveRefreshAndAccessTokenTask.getStatus() == Status.RUNNING) {
 			// log
-			Log.d("TASK-wait", "RetrieveRefreshAndAccessTokenTask");
+			Log.d("TASK-1-wait", "RetrieveRefreshAndAccessTokenTask");
 			this.logUI("Please wait...");
-			
+
 		} else {
-			Log.d("TASK-execute2", "RetrieveRefreshAndAccessTokenTask");
+			Log.d("TASK-1-execute2", "RetrieveRefreshAndAccessTokenTask");
 			retrieveRefreshAndAccessTokenTask.execute();
 		}
 	}
 
 	/**
-	 * Renew the access token with the refresh token.
-	 * This method should only be used when the response type = code.
-	 * The refresh token should be local available.
+	 * Renew the access token with the refresh token. This method should only be
+	 * used when the response type = code. The refresh token should be local
+	 * available.
 	 */
 	private void retrieveAccessTokenWithResponseTypeCode() {
 
@@ -208,64 +211,64 @@ public class SchemeCaptureActivity extends Activity {
 		if (retrieveAccessTokenTask == null) {
 			retrieveAccessTokenTask = new RetrieveAccessTokenTask();
 		}
-		Log.d("TASK", retrieveAccessTokenTask.toString());
-		
+		Log.d("TASK-2", retrieveAccessTokenTask.toString());
+
 		if (retrieveAccessTokenTask.getStatus() == Status.FINISHED) {
 			retrieveAccessTokenTask = new RetrieveAccessTokenTask();
-			Log.d("TASK-execute1", "RetrieveAccessTokenTask");
+			Log.d("TASK-2-execute1", "RetrieveAccessTokenTask");
 			retrieveAccessTokenTask.execute();
 		} else if (retrieveAccessTokenTask.getStatus() == Status.RUNNING) {
 			// log
-			Log.d("TASK-wait", "RetrieveAccessTokenTask");
+			Log.d("TASK-2-wait", "RetrieveAccessTokenTask");
 			this.logUI("Please wait...");
-			
+
 		} else {
-			Log.d("TASK-execute2", "RetrieveAccessTokenTask");
+			Log.d("TASK-2-execute2", "RetrieveAccessTokenTask");
 			retrieveAccessTokenTask.execute();
 		}
 	}
 
 	/**
-	 * Retrieve the data from the secure webservice with the access token.
-	 * This method should only be used when the response type = code.
-	 * The access token should be local available.
+	 * Retrieve the data from the secure webservice with the access token. This
+	 * method should only be used when the response type = code. The access
+	 * token should be local available.
 	 */
 	private void retrieveDataWithAccessTokenWithResponseTypeCode() {
-		
+
 		if (retrieveDataResponseTypeCodeTask == null) {
 			retrieveDataResponseTypeCodeTask = new RetrieveDataResponseTypeCodeTask();
 		}
-		Log.d("TASK", retrieveDataResponseTypeCodeTask.toString());
-		
+		Log.d("TASK-3", retrieveDataResponseTypeCodeTask.toString());
+
 		if (retrieveDataResponseTypeCodeTask.getStatus() == Status.FINISHED) {
 			retrieveDataResponseTypeCodeTask = new RetrieveDataResponseTypeCodeTask();
-			Log.d("TASK-execute1", "RetrieveDataResponseTypeCodeTask");
+			Log.d("TASK-3-execute1", "RetrieveDataResponseTypeCodeTask");
 			retrieveDataResponseTypeCodeTask.execute();
 		} else if (retrieveDataResponseTypeCodeTask.getStatus() == Status.RUNNING) {
 			// log
-			Log.d("TASK-wait", "RetrieveDataResponseTypeCodeTask");
+			Log.d("TASK-3-wait", "RetrieveDataResponseTypeCodeTask");
 			this.logUI("Please wait...");
-			
+
 		} else {
-			Log.d("TASK-execute2", "RetrieveDataResponseTypeCodeTask");
+			Log.d("TASK-3-execute2", "RetrieveDataResponseTypeCodeTask");
 			retrieveDataResponseTypeCodeTask.execute();
 		}
 	}
 
 	private void logUI(String text) {
-		
+
 		Log.v("text-added", text);
 		if (et.getText() == null) {
-			et.setText(""+text);
+			et.setText("" + text);
 		} else {
-			et.setText(""+et.getText()+"\n"+text);
+			et.setText("" + et.getText() + "\n" + text);
 		}
 	}
 
 	/**
-	 * Retrieve the data from the secure webservice with the access token.
-	 * This method should only be used when the response type = token.
-	 * The access token should be local available.
+	 * Retrieve the data from the secure webservice with the access token. This
+	 * method should only be used when the response type = token. The access
+	 * token should be local available.
 	 */
 	private void retrieveDataWithAccessTokenWithResponseTypeToken() {
 		String access_token = fragments.get("access_token");
@@ -285,7 +288,7 @@ public class SchemeCaptureActivity extends Activity {
 			in = new BufferedReader(isr, 256);
 
 			StringBuilder sb = new StringBuilder();
-			//sb.append(et.getText());
+			// sb.append(et.getText());
 			sb.append("\nLenght=");
 			sb.append(tc.getContentLength());
 			sb.append("\nType=");
@@ -311,25 +314,26 @@ public class SchemeCaptureActivity extends Activity {
 				Log.v("demo.surfconext", "output=" + output);
 			}
 
-			//et.setText(sb.toString());
+			// et.setText(sb.toString());
 			tc.disconnect();
 		} catch (Exception e) {
-			Log.e("demo.surfconext.error", "retrieveDataWithAccessTokenWithResponseTypeToken", e);
+			Log.e("demo.surfconext.error",
+					"retrieveDataWithAccessTokenWithResponseTypeToken", e);
 		} finally {
 			try {
 				in.close();
 
 			} catch (IOException e) {
-				Log.e("demo.surfconext.error", "retrieveDataWithAccessTokenWithResponseTypeToken", e);
+				Log.e("demo.surfconext.error",
+						"retrieveDataWithAccessTokenWithResponseTypeToken", e);
 			}
 		}
 	}
 
 	/**
-	 * The default flow for retrieving data.
-	 * if needed, retrieve refresh and access token from the authorization code.
-	 * if needed, retrieve new access token from the refresh token
-	 * if needed, retrieve new authorization code.
+	 * The default flow for retrieving data. if needed, retrieve refresh and
+	 * access token from the authorization code. if needed, retrieve new access
+	 * token from the refresh token if needed, retrieve new authorization code.
 	 * retrieve the data.
 	 */
 	private void refreshData() {
@@ -338,8 +342,8 @@ public class SchemeCaptureActivity extends Activity {
 		if (isResponseTypeIsCode) {
 
 			Log.v("demo.surfconext", "refreshdata: responseType = code");
-			if (service.getAccessToken() == null
-					|| "".equalsIgnoreCase(service.getAccessToken())) {
+			String accessToken = service.getAccessToken();
+			if (accessToken == null || "".equalsIgnoreCase(accessToken)) {
 
 				if (service.getRefreshToken() == null
 						|| "".equalsIgnoreCase(service.getRefreshToken())) {
@@ -348,39 +352,9 @@ public class SchemeCaptureActivity extends Activity {
 					retrieveAccessTokenWithResponseTypeCode();
 				}
 
-				if (service.getAccessToken() == null
-						|| "".equalsIgnoreCase(service.getAccessToken())) {
-
-					StringBuilder sb = new StringBuilder();
-					// basic authorize
-					sb.append(service.getAuthorize_url());
-					// response type
-					sb.append("?");
-					sb.append("response_type=");
-					sb.append(service.getAuthorize_response_type());
-					// client_id
-					sb.append("&");
-					sb.append("client_id=");
-					sb.append(service.getAuthorize_client_id());
-					// scope
-					sb.append("&");
-					sb.append("scope=");
-					sb.append(service.getAuthorize_scope());
-					// redirect
-					sb.append("&");
-					sb.append("redirect_uri=");
-					sb.append(service.getAuthorize_redirect_uri());
-
-					String url = sb.toString();
-
-					Log.v("demo.surfconext",
-							"Starting (Scheme Class) with url = " + url);
-					Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-
-					startActivity(i);
-				}
+			} else {
+				retrieveDataWithAccessTokenWithResponseTypeCode();
 			}
-			retrieveDataWithAccessTokenWithResponseTypeCode();
 
 		} else {
 
@@ -390,12 +364,12 @@ public class SchemeCaptureActivity extends Activity {
 	}
 
 	/**
-	 * For use with android 2.2 (FROYO) the property http.keepAlive needs to be set on false.
-	 * After this the connection pooling won't be used. The 
+	 * For use with android 2.2 (FROYO) the property http.keepAlive needs to be
+	 * set on false. After this the connection pooling won't be used. The
 	 */
 	private static void disableConnectionReuseIfNecessary() {
 		// HTTP connection reuse which was buggy pre-froyo
-		
+
 		if (Build.VERSION.SDK_INT == 8) {
 			System.setProperty("http.keepAlive", "false");
 		}
@@ -405,17 +379,17 @@ public class SchemeCaptureActivity extends Activity {
 
 		try {
 			JSONObject jo = new JSONObject(tokenString);
-			
+
 			if ((!jo.has("access_token")) && (!jo.has("token_type"))) {
 				/**
 				 * Error !, those 2 are required!.
 				 */
 				// TODO
 			}
-			
+
 			service.setAccessToken(jo.getString("access_token"));
 			service.setTokenType(jo.getString("token_type"));
-			
+
 			if (jo.has("refresh_token")) {
 				service.setRefreshToken(jo.getString("refresh_token"));
 			}
@@ -423,24 +397,55 @@ public class SchemeCaptureActivity extends Activity {
 			if (jo.has("expires_in")) {
 				service.setExpiresIn(jo.getInt("expires_in"));
 			}
-			
+
 			if (jo.has("scope")) {
 				service.setScope(jo.getString("scope"));
 			}
-			
+
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
-	private class RetrieveDataResponseTypeCodeTask extends AsyncTask<String, Void, String> {
+
+	public void doAuthentication() {
+
+		StringBuilder sb = new StringBuilder();
+		// basic authorize
+		sb.append(service.getAuthorize_url());
+		// response type
+		sb.append("?");
+		sb.append("response_type=");
+		sb.append(service.getAuthorize_response_type());
+		// client_id
+		sb.append("&");
+		sb.append("client_id=");
+		sb.append(service.getAuthorize_client_id());
+		// scope
+		sb.append("&");
+		sb.append("scope=");
+		sb.append(service.getAuthorize_scope());
+		// redirect
+		sb.append("&");
+		sb.append("redirect_uri=");
+		sb.append(service.getAuthorize_redirect_uri());
+
+		String url = sb.toString();
+
+		Log.v("demo.surfconext", "Starting (Scheme Class) with url = " + url);
+		Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+
+		startActivity(i);
+	}
+
+	private class RetrieveDataResponseTypeCodeTask extends
+			AsyncTask<String, Void, String> {
 
 		@Override
 		protected String doInBackground(String... params) {
-			
+
 			String result = "";
-			
+
 			HttpURLConnection conn = null;
 			try {
 
@@ -448,26 +453,27 @@ public class SchemeCaptureActivity extends Activity {
 
 				conn = (HttpURLConnection) webserviceUrl.openConnection();
 
-//				if (count % 3 == 2) {
-//					if (service.getTokenType().equalsIgnoreCase("bearer")) {
-//						conn.setRequestProperty("Authorization", "Bearer 222"
-//								+ service.getAccessToken());
-//					}
-//				} else {
-					if (service.getTokenType().equalsIgnoreCase("bearer")) {
-						conn.setRequestProperty("Authorization", "Bearer "
-								+ service.getAccessToken());
-					}
-//				}
+				// if (count % 3 == 2) {
+				// if (service.getTokenType().equalsIgnoreCase("bearer")) {
+				// conn.setRequestProperty("Authorization", "Bearer 222"
+				// + service.getAccessToken());
+				// }
+				// } else {
+				if (service.getTokenType().equalsIgnoreCase("bearer")) {
+					conn.setRequestProperty("Authorization", "Bearer "
+							+ service.getAccessToken());
+				}
+				// }
 				Log.d("demo.surfconext", conn.getRequestProperties().toString());
 
 				Log.v("demo.surfconext", conn.toString());
-				InputStreamReader isr = new InputStreamReader(conn.getInputStream());
+				InputStreamReader isr = new InputStreamReader(
+						conn.getInputStream());
 				BufferedReader in = new BufferedReader(isr, 256);
 
 				String response = "";
 				StringBuilder sb_output = new StringBuilder();
-				//sb_output.append(et.getText());
+				// sb_output.append(et.getText());
 				while ((response = in.readLine()) != null) {
 
 					Log.v("demo.surfconext", "response=" + response);
@@ -476,13 +482,14 @@ public class SchemeCaptureActivity extends Activity {
 				}
 				sb_output.append("\n");
 				result = sb_output.toString();
-//				et.setText(sb_output.toString());
-				//count++;
+				// et.setText(sb_output.toString());
+				// count++;
 
 			} catch (MalformedURLException e) {
-				Log.e("demo.surfconext.error", "retrieveDataWithAccessTokenWithResponseTypeCode", e);
+				Log.e("demo.surfconext.error",
+						"retrieveDataWithAccessTokenWithResponseTypeCode", e);
 			} catch (IOException e) {
-				
+
 				try {
 					Log.d("demo.surfconext.error", "" + conn.getResponseCode()
 							+ " " + conn.getResponseMessage());
@@ -491,21 +498,21 @@ public class SchemeCaptureActivity extends Activity {
 					if (responseCode == 401) {
 						// token invalid
 						StringBuilder sb_output = new StringBuilder();
-						//sb_output.append(et.getText());
+						// sb_output.append(et.getText());
 						sb_output.append("\n");
 						sb_output
 								.append("Oops the token is invalid, let me try again!\n");
 
 						result = sb_output.toString();
-						//et.setText(sb_output.toString());
-						//count = 0;
+						// et.setText(sb_output.toString());
+						// count = 0;
 						retrieveAccessTokenWithResponseTypeCode();
-						//retrieveDataWithAccessTokenWithResponseTypeCode();
+						// retrieveDataWithAccessTokenWithResponseTypeCode();
 					} else {
 
 						// something else
 						StringBuilder sb_output = new StringBuilder();
-						//sb_output.append(et.getText());
+						// sb_output.append(et.getText());
 						sb_output.append("\n");
 						sb_output.append("Oops something happend!\n");
 						sb_output.append("HTTP response code = " + responseCode
@@ -514,33 +521,35 @@ public class SchemeCaptureActivity extends Activity {
 								+ conn.getResponseMessage() + "\n");
 
 						result = sb_output.toString();
-//						et.setText(sb_output.toString());
+						// et.setText(sb_output.toString());
 					}
 
 				} catch (IOException e1) {
-					Log.e("demo.surfconext.error", "RetrieveDataResponseTypeCodeTask", e);
+					Log.e("demo.surfconext.error",
+							"RetrieveDataResponseTypeCodeTask", e);
 				}
 			}
-			
-			
+
 			return result;
 		}
 
 		@Override
 		protected void onPostExecute(String result) {
-			
-			Log.d("DEBUG-RetrieveDataResponseTypeCodeTask","onPostExecute = "+result);
+
+			Log.d("DEBUG-RetrieveDataResponseTypeCodeTask", "onPostExecute = "
+					+ result);
 			logUI(result);
 		}
 	}
-	
-	private class RetrieveRefreshAndAccessTokenTask extends AsyncTask<String, Void, String> {
+
+	private class RetrieveRefreshAndAccessTokenTask extends
+			AsyncTask<String, Void, String> {
 
 		@Override
 		protected String doInBackground(String... params) {
-			
+
 			String result = "";
-			
+
 			if (fragments.containsKey("code")) {
 				String code = fragments.get("code");
 				Log.v("demo.surfconext", "code=" + code);
@@ -555,16 +564,17 @@ public class SchemeCaptureActivity extends Activity {
 							.openConnection();
 
 					String param = "grant_type="
-							+ URLEncoder.encode(service.getAuthorize_grant_type(),
-									"UTF-8")
+							+ URLEncoder.encode(
+									service.getAuthorize_grant_type(), "UTF-8")
 							+ "&code="
 							+ URLEncoder.encode(code, "UTF-8")
 							+ "&redirect_uri="
 							+ URLEncoder.encode(
-									service.getAuthorize_redirect_uri(), "UTF-8")
+									service.getAuthorize_redirect_uri(),
+									"UTF-8")
 							+ "&client_id="
-							+ URLEncoder.encode(service.getAuthorize_client_id(),
-									"UTF-8");
+							+ URLEncoder.encode(
+									service.getAuthorize_client_id(), "UTF-8");
 
 					conn.setDoOutput(true);
 					conn.setRequestMethod("POST");
@@ -577,7 +587,8 @@ public class SchemeCaptureActivity extends Activity {
 					out.print(param);
 					out.close();
 
-					// build the string to store the response text from the server
+					// build the string to store the response text from the
+					// server
 					String response = "";
 
 					// start listening to the stream
@@ -589,34 +600,43 @@ public class SchemeCaptureActivity extends Activity {
 					}
 					Log.v("demo.surfconext", response);
 					result = response;
-					
+
 				} catch (MalformedURLException e) {
-					Log.e("demo.surfconext.error", "retrieveRefreshAndAccessTokenWithResponseTypeCode", e);
+					Log.e("demo.surfconext.error",
+							"retrieveRefreshAndAccessTokenWithResponseTypeCode",
+							e);
 				} catch (IOException e) {
-					Log.e("demo.surfconext.error", "retrieveRefreshAndAccessTokenWithResponseTypeCode", e);
+					Log.e("demo.surfconext.error",
+							"retrieveRefreshAndAccessTokenWithResponseTypeCode",
+							e);
 				}
 
 				fragments.remove("code");
-				}
-				return result;
+			}
+			return result;
 		}
-		
+
 		@Override
 		protected void onPostExecute(String result) {
-			
+
 			if (result != null && !"".equals(result)) {
 				storeTokens(result);
 				retrieveDataWithAccessTokenWithResponseTypeCode();
+			} else {
+
+				doAuthentication();
 			}
 		}
 	}
-	private class RetrieveAccessTokenTask extends AsyncTask<String, Void, String> {
+
+	private class RetrieveAccessTokenTask extends
+			AsyncTask<String, Void, String> {
 
 		@Override
 		protected String doInBackground(String... params) {
-			
+
 			String result = "";
-			
+
 			String url = service.getToken_url();
 			URL tokenUrl;
 
@@ -654,13 +674,14 @@ public class SchemeCaptureActivity extends Activity {
 				}
 				Log.v("demo.surfconext", response);
 				result = response;
-				
 
 			} catch (MalformedURLException e) {
-				Log.e("demo.surfconext.error", "retrieveAccessTokenWithResponseTypeCode", e);
+				Log.e("demo.surfconext.error",
+						"retrieveAccessTokenWithResponseTypeCode", e);
 			} catch (IOException e) {
-				Log.e("demo.surfconext.error", "retrieveAccessTokenWithResponseTypeCode", e);
-			} 
+				Log.e("demo.surfconext.error",
+						"retrieveAccessTokenWithResponseTypeCode", e);
+			}
 			// FOR TESTING PURPOSE ONLY
 			// AuthenticationDbService.getInstance().setRefreshToken("");
 			return result;
@@ -668,10 +689,14 @@ public class SchemeCaptureActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(String result) {
-			
+
 			if (result != null && !"".equals(result)) {
+				logUI("Retrieved new Token(s)");
 				storeTokens(result);
 				retrieveDataWithAccessTokenWithResponseTypeCode();
+			} else {
+
+				doAuthentication();
 			}
 		}
 	}
