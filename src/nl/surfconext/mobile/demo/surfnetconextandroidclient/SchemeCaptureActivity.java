@@ -320,6 +320,8 @@ public class SchemeCaptureActivity extends Activity {
 		} catch (Exception e) {
 			Log.e("demo.surfconext.error",
 					"retrieveDataWithAccessTokenWithResponseTypeToken", e);
+			
+			doAuthentication();
 		} finally {
 			try {
 				in.close();
@@ -327,6 +329,7 @@ public class SchemeCaptureActivity extends Activity {
 			} catch (IOException e) {
 				Log.e("demo.surfconext.error",
 						"retrieveDataWithAccessTokenWithResponseTypeToken", e);
+				doAuthentication();
 			}
 		}
 	}
