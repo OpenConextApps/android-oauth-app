@@ -21,7 +21,7 @@ Import the project in Eclipse.
 
 ### Properties
 
-In the properties file demo.properties is confugured the following properties.
+In the properties file demo.properties is configured the following properties.
 
 # Summerschool demo
     authorize_url=https://frko.surfnetlabs.nl/php-oauth/authorize.php
@@ -34,13 +34,17 @@ In the properties file demo.properties is confugured the following properties.
     token_grant_type=authorization_code
     webservice_url=https://frko.surfnetlabs.nl/php-summerschool/api.php/grades/@me
 
+
 ### Start Activity
 
 In the screen StartActivity some of the properties are shown to the user.
 After pressing the the login button the app will try to connect to the authentication server
 to retrieve the requested redirect-uri and an authorization code.
- 
+
 ### Scheme Capture Activity
 
 This activity is registered with a scheme to capture (in the AndroidManifest.xml).
 After the activity starts (to be continued...)
+
+
+

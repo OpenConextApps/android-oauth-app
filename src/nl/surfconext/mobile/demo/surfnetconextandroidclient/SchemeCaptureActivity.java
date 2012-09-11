@@ -596,13 +596,6 @@ public class SchemeCaptureActivity extends Activity {
 							+ URLEncoder.encode(
 									service.getAuthorize_client_id(), "UTF-8");
 					
-					String client_secret = service.getAuthorize_client_secret();
-					
-					if (client_secret != null) {
-						param += "&client_secret="
-								+ URLEncoder.encode(client_secret, "UTF-8");
-					}
-					
 					conn.setDoOutput(true);
 					conn.setRequestMethod("POST");
 					conn.setFixedLengthStreamingMode(param.getBytes().length);
