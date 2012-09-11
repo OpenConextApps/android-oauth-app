@@ -275,8 +275,7 @@ public class SchemeCaptureActivity extends Activity {
 		String access_token = fragments.get("access_token");
 		Log.v("demo.surfconext", "access_token=" + access_token);
 
-		String url = service.getWebservice_url() + "?access_token="
-				+ access_token;
+		String url = service.getWebservice_url();
 
 		Log.v("demo.surfconext", "url=" + url);
 		BufferedReader in = null;
@@ -284,6 +283,7 @@ public class SchemeCaptureActivity extends Activity {
 			URL jsonURL = new URL(url);
 			Log.v("demo.surfconext", jsonURL.toString());
 			HttpURLConnection tc = (HttpURLConnection) jsonURL.openConnection();
+			tc.addRequestProperty("Authorization", "Bearer " + access_token);
 			Log.v("demo.surfconext", tc.toString());
 			InputStreamReader isr = new InputStreamReader(tc.getInputStream());
 			in = new BufferedReader(isr, 256);
