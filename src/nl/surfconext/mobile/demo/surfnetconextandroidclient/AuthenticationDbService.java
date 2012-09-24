@@ -91,10 +91,16 @@ public class AuthenticationDbService {
 
 	}
 
+	/**
+	 * Retrieving the refresh token from the local storage on the device.
+	 */
 	public String getRefreshToken() {
 		return mPrefs.getString(REFRESH_TOKEN, null);
 	}
 
+	/**
+	 * Storing the refresh token into the local storage on the device.
+	 */
 	public void setRefreshToken(final String token) {
 
 		Editor editor = mPrefs.edit();
@@ -102,6 +108,13 @@ public class AuthenticationDbService {
 		editor.commit();
 	}
 
+	/**
+	 * Retrieving the access token from the local storage on the device.
+	 * If there is a value "expires in" is stored, there will be checked
+	 * if the access token is still valid.
+	 * When there is no "expires in" or the access token is still valid, the access token
+	 * will be returned. Otherwise an empty access token will be returned.
+	 */
 	public String getAccessToken() {
 
 		long expires_in_long = mPrefs.getLong(EXPIRES_IN_LONG, -1);

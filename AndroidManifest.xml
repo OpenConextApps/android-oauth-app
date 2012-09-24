@@ -25,14 +25,14 @@
 
         <activity
             android:name=".SchemeCaptureActivity"
-            android:label="@string/title_activity_scheme_capture" >
+            android:label="@string/title_activity_scheme_capture"
+            android:exported="true"
+            android:permission="android.permission.INTERNET">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
 				<category android:name="android.intent.category.DEFAULT" />
 				<category android:name="android.intent.category.BROWSABLE" />
-				<data android:scheme="testscheme"/>
 				<data android:scheme="oauth-mobile-app"/>
-				
 			</intent-filter>
         </activity>
 
