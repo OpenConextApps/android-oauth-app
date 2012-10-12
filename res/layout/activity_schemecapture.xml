@@ -28,7 +28,6 @@
         android:gravity="center_vertical|top"
         android:inputType="textMultiLine"
         android:scrollbars="vertical" >
-
     </EditText>
 
     <Button
@@ -38,7 +37,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:text="@string/button_refresh"
-        />
+        android:text="@string/button_refresh" />
 
 </RelativeLayout>

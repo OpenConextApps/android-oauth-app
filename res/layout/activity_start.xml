@@ -10,9 +10,8 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:text="@string/surfnet"
-        tools:context=".StartActivity"
-        />
-    
+        tools:context=".StartActivity" />
+
     <TextView
         android:id="@+id/textView_autorize_url"
         android:layout_width="wrap_content"
@@ -20,10 +19,9 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/textView_header"
-        android:text="@string/authorize_url"
         android:ems="10"
-        />
-    
+        android:text="@string/authorize_url" />
+
     <EditText
         android:id="@+id/editText_autorize_url"
         android:layout_width="wrap_content"
@@ -31,14 +29,13 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/textView_autorize_url"
-        android:text="@string/authorize_url"
+        android:clickable="false"
+        android:cursorVisible="false"
         android:ems="10"
-        android:inputType="none"
-        android:clickable="false" 
-        android:cursorVisible="false" 
-        android:focusable="false" 
+        android:focusable="false"
         android:focusableInTouchMode="false"
-        />
+        android:inputType="none"
+        android:text="@string/authorize_url" />
 
     <TextView
         android:id="@+id/textView_response_type"
@@ -47,10 +44,9 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/editText_autorize_url"
-        android:text="@string/authorize_response_type"
         android:ems="10"
-        />
-        
+        android:text="@string/authorize_response_type" />
+
     <EditText
         android:id="@+id/editText_response_type"
         android:layout_width="wrap_content"
@@ -58,14 +54,13 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/textView_response_type"
+        android:clickable="false"
+        android:cursorVisible="false"
         android:ems="10"
-        android:text="@string/authorize_response_type"
-        android:inputType="none"
-        android:clickable="false" 
-        android:cursorVisible="false" 
-        android:focusable="false" 
+        android:focusable="false"
         android:focusableInTouchMode="false"
-        />
+        android:inputType="none"
+        android:text="@string/authorize_response_type" />
 
     <TextView
         android:id="@+id/textView_client_id"
@@ -74,10 +69,9 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/editText_response_type"
-        android:text="@string/authorize_client_id"
         android:ems="10"
-        />
-        
+        android:text="@string/authorize_client_id" />
+
     <EditText
         android:id="@+id/editText_client_id"
         android:layout_width="wrap_content"
@@ -85,26 +79,24 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/textView_client_id"
+        android:clickable="false"
+        android:cursorVisible="false"
         android:ems="10"
-        android:text="@string/authorize_client_id"
-        android:inputType="none"
-        android:clickable="false" 
-        android:cursorVisible="false" 
-        android:focusable="false" 
+        android:focusable="false"
         android:focusableInTouchMode="false"
-        />
+        android:inputType="none"
+        android:text="@string/authorize_client_id" />
 
-	<TextView
+    <TextView
         android:id="@+id/textView_redirect_uri"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/editText_client_id"
-        android:text="@string/authorize_redirect_uri"
         android:ems="10"
-        />
-        
+        android:text="@string/authorize_redirect_uri" />
+
     <EditText
         android:id="@+id/editText_redirect_uri"
         android:layout_width="wrap_content"
@@ -112,14 +104,13 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/textView_redirect_uri"
+        android:clickable="false"
+        android:cursorVisible="false"
         android:ems="10"
-        android:text="@string/authorize_redirect_uri"
-        android:inputType="none"
-        android:clickable="false" 
-        android:cursorVisible="false" 
-        android:focusable="false" 
+        android:focusable="false"
         android:focusableInTouchMode="false"
-        />
+        android:inputType="none"
+        android:text="@string/authorize_redirect_uri" />
 
     <Button
         android:id="@+id/button_start"
@@ -128,7 +119,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/editText_redirect_uri"
-        android:text="@string/button_login"
-        />
+        android:text="@string/button_login" />
 
 </RelativeLayout>

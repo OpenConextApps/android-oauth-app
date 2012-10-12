@@ -109,11 +109,11 @@ public class AuthenticationDbService {
 	}
 
 	/**
-	 * Retrieving the access token from the local storage on the device.
-	 * If there is a value "expires in" is stored, there will be checked
-	 * if the access token is still valid.
-	 * When there is no "expires in" or the access token is still valid, the access token
-	 * will be returned. Otherwise an empty access token will be returned.
+	 * Retrieving the access token from the local storage on the device. If
+	 * there is a value "expires in" is stored, there will be checked if the
+	 * access token is still valid. When there is no "expires in" or the access
+	 * token is still valid, the access token will be returned. Otherwise an
+	 * empty access token will be returned.
 	 */
 	public String getAccessToken() {
 
@@ -127,10 +127,12 @@ public class AuthenticationDbService {
 		}
 		long now_long = new Date().getTime();
 		if (expires_in_long > now_long) {
-			Log.v("access_token", "Expires in " + (expires_in_long - now_long) + " milliseconds");
+			Log.v("access_token", "Expires in " + (expires_in_long - now_long)
+					+ " milliseconds");
 			return mPrefs.getString(ACCESS_TOKEN, null);
 		}
-		Log.v("access_token", "Overtime " + (now_long - expires_in_long) + " milliseconds");
+		Log.v("access_token", "Overtime " + (now_long - expires_in_long)
+				+ " milliseconds");
 		return "";
 	}
 
@@ -182,7 +184,7 @@ public class AuthenticationDbService {
 	public String getAuthorize_client_secret() {
 		return demoProperties.getProperty("authorize_client_secret", null);
 	}
-	
+
 	public String getAuthorize_url() {
 		return demoProperties.getProperty("authorize_url");
 	}
